@@ -1,0 +1,121 @@
+@model SmartEventTicketing.Models.Event
+@{
+    ViewData["Title"] = Model.EventName;
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var isAdmin = User.IsInRole("Admin");
+    var hasReviews = Model.Reviews != null && Model.Reviews.Any();
+    var avgRating = hasReviews ? Model.Reviews!.Average(r => r.Rating) : 0;
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <span class="event-category">@Model.Category?.CategoryName</span>
+        <h2 class="card-title mt-1">@Model.EventName</h2>
+    </div>
+
+    <div class="event-card-image" style="margin-bottom: 1.5rem; border-radius: 6px;">
+        @Model.EventName
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Description))
+    {
+        <p>@Model.Description</p>
+    }
+
+    <p class="event-meta"><strong>Venue:</strong> @Model.Venue</p>
+    <p class="event-meta"><strong>Date & Time:</strong> @Model.EventDate.ToString("dddd, dd MMMM yyyy, h:mm tt")</p>
+
+    @if (isAuthenticated && !isAdmin)
+    {
+        <div class="card mt-2" style="background: #f8fafc;">
+            <h4>Ticket Information</h4>
+            <p class="event-meta"><strong>Available Seats:</strong> @Model.AvailableSeats / @Model.TotalSeats</p>
+            <p class="event-meta"><strong>Standard:</strong> LKR @Model.StandardPrice.ToString("N2") per ticket</p>
+            <p class="event-meta"><strong>VIP:</strong> LKR @Model.VIPPrice.ToString("N2") per ticket</p>
+
+            @if (Model.AvailableSeats > 0 && Model.EventDate >= DateTime.Now)
+            {
+                <a asp-controller="Bookings" asp-action="Create" asp-route-eventId="@Model.EventId" class="btn btn-success mt-1">Book Tickets</a>
+            }
+            else if (Model.EventDate < DateTime.Now)
+            {
+                <p class="text-muted mt-1"><em>This event has already taken place.</em></p>
+            }
+            else
+            {
+                <p class="text-danger mt-1"><strong>This event is sold out.</strong></p>
+            }
+        </div>
+    }
+    else if (!isAuthenticated)
+    {
+        <div class="alert alert-info mt-2">
+            <strong>Want to book tickets?</strong>
+            <a asp-area="Identity" asp-page="/Account/Login">Login</a> or
+            <a asp-area="Identity" asp-page="/Account/Register">register</a> to access pricing and booking.
+        </div>
+    }
+
+    <a asp-action="Browse" class="btn btn-outline mt-2">&larr; Back to Events</a>
+</div>
+
+<!-- Reviews Section -->
+<section class="mt-3">
+    <div class="section-heading">
+        <h3>Reviews</h3>
+        <div>
+            @if (hasReviews)
+            {
+                <span class="text-muted">@avgRating.ToString("0.0") / 5.0 average from @Model.Reviews!.Count() review(s)</span>
+            }
+            @if (ViewBag.CanReview != null && (bool)ViewBag.CanReview)
+            {
+                <a asp-controller="Reviews" asp-action="Create" asp-route-eventId="@Model.EventId" class="btn btn-success btn-sm" style="margin-left: 1rem;">Write a Review</a>
+            }
+        </div>
+    </div>
+
+    @if (!hasReviews)
+    {
+        <div class="alert alert-info">No reviews yet. Be the first to share your experience after attending.</div>
+    }
+    else
+    {
+        @foreach (var review in Model.Reviews!.OrderByDescending(r => r.ReviewDate))
+        {
+            <div class="card">
+                <p class="event-meta">
+                    <strong>@review.Member?.FullName</strong> &middot;
+                    <span class="text-muted">@review.ReviewDate.ToString("dd MMM yyyy")</span>
+                </p>
+                <p class="event-meta">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= review.Rating)
+                        {
+                            <span style="color: #f59e0b;">&#9733;</span>
+                        }
+                        else
+                        {
+                            <span style="color: #cbd5e1;">&#9733;</span>
+                        }
+                    }
+                    <span class="text-muted">(@review.Rating / 5)</span>
+                </p>
+                @if (!string.IsNullOrEmpty(review.Comment))
+                {
+                    <p>@review.Comment</p>
+                }
+            </div>
+        }
+    }
+</section>

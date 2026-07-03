@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Payment";
+    var ev = ViewBag.Event as SmartEventTicketing.Models.Event;
+    var seatType = ViewBag.SeatType as string;
+    var quantity = (int)(ViewBag.Quantity ?? 0);
+    var total = (decimal)(ViewBag.Total ?? 0m);
+}
+
+<h2>Payment</h2>
+
+<div class="alert alert-info">
+    <strong>Demo Mode:</strong> This is a simulated payment screen. No real card data is processed or stored.
+</div>
+
+<!-- Booking Summary -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Booking Summary</h3>
+    </div>
+    <p class="event-meta"><strong>Event:</strong> @ev?.EventName</p>
+    <p class="event-meta"><strong>Venue:</strong> @ev?.Venue</p>
+    <p class="event-meta"><strong>Date:</strong> @ev?.EventDate.ToString("dd MMM yyyy, h:mm tt")</p>
+    <p class="event-meta"><strong>Seat Type:</strong> @seatType</p>
+    <p class="event-meta"><strong>Quantity:</strong> @quantity</p>
+    <p class="event-price" style="font-size: 1.3rem;">Total: LKR @total.ToString("N2")</p>
+</div>
+
+<!-- Stub Payment Form -->
+<div class="form-container mt-2">
+    <h3>Card Details</h3>
+    <p class="text-muted mb-2">Enter any values — this is a demo and no validation is performed on the card.</p>
+
+    <form asp-action="ConfirmPayment" method="post">
+        <div class="form-group">
+            <label>Cardholder Name</label>
+            <input type="text" placeholder="John Doe" required />
+        </div>
+
+        <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" placeholder="4242 4242 4242 4242" maxlength="19" required />
+        </div>
+
+        <div class="search-row">
+            <div class="form-group">
+                <label>Expiry (MM/YY)</label>
+                <input type="text" placeholder="12/28" maxlength="5" required />
+            </div>
+
+            <div class="form-group">
+                <label>CVV</label>
+                <input type="text" placeholder="123" maxlength="4" required />
+            </div>
+        </div>
+
+        <div class="action-buttons mt-3">
+            <button type="submit" class="btn btn-success">Pay LKR @total.ToString("N2")</button>
+            <a asp-controller="Events" asp-action="PublicDetails" asp-route-id="@ev?.EventId" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

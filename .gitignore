@@ -1,0 +1,59 @@
+# ============================================================
+# .gitignore for ASP.NET Core / Visual Studio 2022 project
+# ============================================================
+
+# Compiled build output
+bin/
+obj/
+
+# Visual Studio local settings and cache
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# NuGet package restore folder
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Rider (JetBrains) IDE files
+.idea/
+*.sln.iml
+
+# VS Code (in case you open the project there too)
+.vscode/
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS system files
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# User secrets (Visual Studio stores DB credentials here)
+secrets.json
+
+# Publish output
+publish/
+PublishProfiles/
+
+# Test results
+TestResults/
+*.trx
+
+# Backup files
+*.bak
+*.tmp
+~$*
+
+# App-specific
+# Keep migrations - they're part of the schema history
+# Keep appsettings.json - but WITHOUT real credentials (see instructions)

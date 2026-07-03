@@ -1,0 +1,73 @@
+@model SmartEventTicketing.Models.Inquiry
+@{
+    ViewData["Title"] = "Inquiry Details";
+}
+
+<h2>Inquiry Details</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">@Model.Subject</h3>
+        <p class="event-meta">
+            @if (Model.Status == "Pending")
+            {
+                <span class="availability-tag availability-full">@Model.Status</span>
+            }
+            else if (Model.Status == "Responded")
+            {
+                <span class="availability-tag availability-available">@Model.Status</span>
+            }
+            else
+            {
+                <span class="availability-tag" style="background: #e2e8f0; color: #475569;">@Model.Status</span>
+            }
+        </p>
+    </div>
+
+    <p class="event-meta"><strong>From:</strong> @Model.GuestName &lt;@Model.GuestEmail&gt;</p>
+    <p class="event-meta"><strong>Date:</strong> @Model.InquiryDate.ToString("dddd, dd MMM yyyy, h:mm tt")</p>
+
+    <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;" />
+
+    <h4>Message</h4>
+    <p style="white-space: pre-wrap;">@Model.Message</p>
+</div>
+
+<div class="card mt-2">
+    <h4>Update Status</h4>
+    <p class="text-muted mb-1">Change the inquiry status to track your response progress.</p>
+    <div class="action-buttons mt-1">
+        <form asp-action="UpdateStatus" method="post" style="display: inline;">
+            <input type="hidden" name="id" value="@Model.InquiryId" />
+            <input type="hidden" name="status" value="Pending" />
+            <button type="submit" class="btn btn-outline btn-sm" @(Model.Status == "Pending" ? "disabled" : "")>Mark as Pending</button>
+        </form>
+
+        <form asp-action="UpdateStatus" method="post" style="display: inline;">
+            <input type="hidden" name="id" value="@Model.InquiryId" />
+            <input type="hidden" name="status" value="Responded" />
+            <button type="submit" class="btn btn-success btn-sm" @(Model.Status == "Responded" ? "disabled" : "")>Mark as Responded</button>
+        </form>
+
+        <form asp-action="UpdateStatus" method="post" style="display: inline;">
+            <input type="hidden" name="id" value="@Model.InquiryId" />
+            <input type="hidden" name="status" value="Closed" />
+            <button type="submit" class="btn btn-secondary btn-sm" @(Model.Status == "Closed" ? "disabled" : "")>Mark as Closed</button>
+        </form>
+    </div>
+
+    <p class="text-muted mt-2" style="font-size: 0.85rem;">
+        <em>Note: Mark as Responded after replying to the guest by email. This system tracks status only.</em>
+    </p>
+</div>
+
+<a asp-action="Index" class="btn btn-outline mt-2">&larr; Back to Inbox</a>

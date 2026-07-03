@@ -1,0 +1,84 @@
+@model IEnumerable<SmartEventTicketing.Models.Inquiry>
+@{
+    ViewData["Title"] = "Inquiry Inbox";
+    var currentFilter = ViewBag.StatusFilter as string ?? "All";
+    int pendingCount = ViewBag.PendingCount ?? 0;
+}
+
+<div class="section-heading">
+    <h2>Inquiry Inbox</h2>
+    @if (pendingCount > 0)
+    {
+        <span class="availability-tag availability-full">@pendingCount Pending</span>
+    }
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="search-bar">
+    <p class="mb-1"><strong>Filter by status:</strong></p>
+    <div class="action-buttons">
+        <a asp-action="Index" asp-route-statusFilter="All" class="btn btn-sm @(currentFilter == "All" ? "btn-primary" : "btn-outline")">All</a>
+        <a asp-action="Index" asp-route-statusFilter="Pending" class="btn btn-sm @(currentFilter == "Pending" ? "btn-primary" : "btn-outline")">Pending</a>
+        <a asp-action="Index" asp-route-statusFilter="Responded" class="btn btn-sm @(currentFilter == "Responded" ? "btn-primary" : "btn-outline")">Responded</a>
+        <a asp-action="Index" asp-route-statusFilter="Closed" class="btn btn-sm @(currentFilter == "Closed" ? "btn-primary" : "btn-outline")">Closed</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No inquiries match this filter.</div>
+}
+else
+{
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.InquiryDate.ToString("dd MMM yyyy, h:mm tt")</td>
+                        <td>
+                            <strong>@item.GuestName</strong><br />
+                            <span class="text-muted" style="font-size: 0.85rem;">@item.GuestEmail</span>
+                        </td>
+                        <td>@item.Subject</td>
+                        <td>
+                            @if (item.Status == "Pending")
+                            {
+                                <span class="availability-tag availability-full">@item.Status</span>
+                            }
+                            else if (item.Status == "Responded")
+                            {
+                                <span class="availability-tag availability-available">@item.Status</span>
+                            }
+                            else
+                            {
+                                <span class="availability-tag" style="background: #e2e8f0; color: #475569;">@item.Status</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.InquiryId" class="btn btn-primary btn-sm">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

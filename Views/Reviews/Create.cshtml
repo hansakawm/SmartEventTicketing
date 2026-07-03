@@ -1,0 +1,48 @@
+@model SmartEventTicketing.Models.Review
+@{
+    ViewData["Title"] = "Submit Review";
+    var ev = ViewBag.Event as SmartEventTicketing.Models.Event;
+}
+
+<h2>Submit Review</h2>
+
+<div class="card mt-2" style="background: #f1f5f9;">
+    <h3>@ev?.EventName</h3>
+    <p class="event-meta"><strong>Venue:</strong> @ev?.Venue</p>
+    <p class="event-meta"><strong>Event Date:</strong> @ev?.EventDate.ToString("dd MMM yyyy")</p>
+</div>
+
+<div class="form-container mt-2">
+    <form asp-action="Create" method="post">
+        <input type="hidden" asp-for="EventId" />
+        <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+        <div class="form-group">
+            <label asp-for="Rating" class="control-label"></label>
+            <select asp-for="Rating" class="form-control">
+                <option value="">-- Select rating --</option>
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Very Good</option>
+                <option value="3">3 - Good</option>
+                <option value="2">2 - Fair</option>
+                <option value="1">1 - Poor</option>
+            </select>
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Comment" class="control-label"></label>
+            <textarea asp-for="Comment" class="form-control" rows="5" placeholder="Share your experience (optional)"></textarea>
+            <span asp-validation-for="Comment" class="text-danger"></span>
+        </div>
+
+        <div class="action-buttons mt-2">
+            <button type="submit" class="btn btn-success">Submit Review</button>
+            <a asp-controller="Events" asp-action="PublicDetails" asp-route-id="@ev?.EventId" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

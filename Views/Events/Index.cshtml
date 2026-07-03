@@ -1,0 +1,62 @@
+@model IEnumerable<SmartEventTicketing.Models.Event>
+
+@{
+    ViewData["Title"] = "Manage Events";
+}
+
+<div class="section-heading">
+    <h2>Manage Events</h2>
+    <a asp-action="Create" class="btn btn-success">+ Add New Event</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No events yet. Click "Add New Event" to create one.</div>
+}
+else
+{
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Venue</th>
+                    <th>Date</th>
+                    <th>Seats</th>
+                    <th>Std Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.EventName</td>
+                        <td>@item.Category?.CategoryName</td>
+                        <td>@item.Venue</td>
+                        <td>@item.EventDate.ToString("dd MMM yyyy")</td>
+                        <td>@item.AvailableSeats / @item.TotalSeats</td>
+                        <td>LKR @item.StandardPrice.ToString("N2")</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-secondary btn-sm">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-outline btn-sm">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,57 @@
+@*
+    Smart Event Ticketing — main layout
+    Replaces the default Bootstrap layout.
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Smart Event Ticketing</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" asp-area="" asp-controller="Home" asp-action="Index">
+                Cultural Events Hub
+            </a>
+
+            <nav class="main-nav">
+                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-area="" asp-controller="Events" asp-action="Browse">Events</a>
+                <a asp-area="" asp-controller="Reviews" asp-action="Browse">Reviews</a>
+                <a asp-area="" asp-controller="Inquiries" asp-action="Create">Contact</a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Events" asp-action="Index">Manage Events</a>
+                    <a asp-controller="EventCategories" asp-action="Index">Categories</a>
+                    <a asp-controller="Inquiries" asp-action="Index">Inquiries</a>
+                }
+                else if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Bookings" asp-action="MyBookings">My Bookings</a>
+                }
+            </nav>
+
+            <partial name="_LoginPartial" />
+        </div>
+    </header>
+
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div>
+            &copy; @DateTime.Now.Year - Metropolitan Cultural Council |
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

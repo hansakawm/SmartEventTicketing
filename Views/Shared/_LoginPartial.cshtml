@@ -1,0 +1,18 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<div class="user-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <span>Hello, @User.Identity?.Name</span>
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+        <button type="submit">Logout</button>
+    </form>
+}
+else
+{
+    <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+}
+</div>

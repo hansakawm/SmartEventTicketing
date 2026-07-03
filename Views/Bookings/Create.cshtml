@@ -1,0 +1,47 @@
+@model SmartEventTicketing.Models.Booking
+@{
+    ViewData["Title"] = "Book Tickets";
+    var ev = ViewBag.Event as SmartEventTicketing.Models.Event;
+}
+
+<h2>Book Tickets</h2>
+
+<div class="card mt-2" style="background: #f1f5f9;">
+    <h3>@ev?.EventName</h3>
+    <p class="event-meta"><strong>Venue:</strong> @ev?.Venue</p>
+    <p class="event-meta"><strong>Date:</strong> @ev?.EventDate.ToString("dddd, dd MMMM yyyy, h:mm tt")</p>
+    <p class="event-meta"><strong>Available Seats:</strong> @ev?.AvailableSeats</p>
+    <p class="event-meta"><strong>Standard:</strong> LKR @ev?.StandardPrice.ToString("N2") &middot; <strong>VIP:</strong> LKR @ev?.VIPPrice.ToString("N2")</p>
+</div>
+
+<div class="form-container mt-2">
+    <form asp-action="Create" method="post">
+        <input type="hidden" asp-for="EventId" />
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <div class="form-group">
+            <label asp-for="SeatType" class="control-label"></label>
+            <select asp-for="SeatType" class="form-control">
+                <option value="Standard">Standard - LKR @ev?.StandardPrice.ToString("N2")</option>
+                <option value="VIP">VIP - LKR @ev?.VIPPrice.ToString("N2")</option>
+            </select>
+            <span asp-validation-for="SeatType" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Quantity" class="control-label"></label>
+            <input asp-for="Quantity" class="form-control" min="1" max="@ev?.AvailableSeats" value="1" />
+            <small class="text-muted">Maximum @ev?.AvailableSeats seats available.</small>
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <div class="action-buttons mt-2">
+            <button type="submit" class="btn btn-success">Proceed to Payment</button>
+            <a asp-controller="Events" asp-action="PublicDetails" asp-route-id="@ev?.EventId" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

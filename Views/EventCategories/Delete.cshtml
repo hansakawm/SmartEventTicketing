@@ -1,0 +1,24 @@
+@model SmartEventTicketing.Models.EventCategory
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h2>Delete Category</h2>
+
+<div class="alert alert-danger">
+    <strong>Are you sure you want to delete this category?</strong>
+    Events linked to this category may be affected.
+</div>
+
+<div class="card">
+    <p><strong>Category Name:</strong> @Model.CategoryName</p>
+
+    <form asp-action="Delete" class="mt-2">
+        <input type="hidden" asp-for="CategoryId" />
+        <div class="action-buttons">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,53 @@
+@model SmartEventTicketing.Models.Inquiry
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<h2>Contact Us</h2>
+<p class="text-muted">
+    Have a question about events, membership, or anything else? Fill out the form below and we'll get back to you.
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="form-container mt-2">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <div class="form-group">
+            <label asp-for="GuestName" class="control-label"></label>
+            <input asp-for="GuestName" class="form-control" />
+            <span asp-validation-for="GuestName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GuestEmail" class="control-label"></label>
+            <input asp-for="GuestEmail" class="form-control" type="email" />
+            <span asp-validation-for="GuestEmail" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Subject" class="control-label"></label>
+            <input asp-for="Subject" class="form-control" placeholder="e.g. Question about membership benefits" />
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Message" class="control-label"></label>
+            <textarea asp-for="Message" class="form-control" rows="6" placeholder="Type your question or feedback here..."></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+
+        <div class="action-buttons mt-2">
+            <button type="submit" class="btn btn-success">Send Inquiry</button>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,67 @@
+@model IEnumerable<SmartEventTicketing.Models.Booking>
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="section-heading">
+    <h2>My Bookings</h2>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        You haven't booked any events yet.
+        <a asp-controller="Events" asp-action="Browse">Browse upcoming events</a> to get started.
+    </div>
+}
+else
+{
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Event</th>
+                    <th>Event Date</th>
+                    <th>Seat Type</th>
+                    <th>Qty</th>
+                    <th>Total Paid</th>
+                    <th>Status</th>
+                    <th>Booking Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#BK-@item.BookingId.ToString("D6")</td>
+                        <td>
+                            <strong>@item.Event?.EventName</strong><br />
+                            <span class="text-muted" style="font-size: 0.85rem;">@item.Event?.Venue</span>
+                        </td>
+                        <td>@item.Event?.EventDate.ToString("dd MMM yyyy")</td>
+                        <td>@item.SeatType</td>
+                        <td>@item.Quantity</td>
+                        <td>LKR @item.TotalAmount.ToString("N2")</td>
+                        <td>
+                            @if (item.PaymentStatus == "Paid")
+                            {
+                                <span class="availability-tag availability-available">@item.PaymentStatus</span>
+                            }
+                            else
+                            {
+                                <span class="availability-tag availability-full">@item.PaymentStatus</span>
+                            }
+                        </td>
+                        <td>@item.BookingDate.ToString("dd MMM yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
